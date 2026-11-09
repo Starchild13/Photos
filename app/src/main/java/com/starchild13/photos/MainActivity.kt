@@ -1,4 +1,3 @@
-
 package com.starchild13.photos
 
 import android.os.Bundle
@@ -18,43 +17,55 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.starchild13.photos.ui.theme.PhotosTheme
 
-// Main Activity class, entry point of the Android application
+/**
+ * MainActivity serves as the primary entry point for the Photos application.
+ * It initializes the Jetpack Compose user interface containing the staggered photo grid.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Setting the content of this activity to the GridExample composable
+        // Set the content of the activity using Jetpack Compose with the app theme
         setContent {
-            GridExample()
+            PhotosTheme {
+                GridExample()
+            }
         }
     }
 }
 
-// Annotation to use experimental API for Foundation layout
+/**
+ * A Composable function that displays a staggered grid of photo items.
+ * Uses LazyVerticalStaggeredGrid to arrange images in a responsive 3-column layout.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GridExample() {
-    // Creating a LazyVerticalStaggeredGrid with fixed 3 columns
+    // Render a vertical staggered grid with 3 fixed columns and padding
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(3),
-        modifier = Modifier.padding(8.dp) // Adding padding around the entire grid
+        modifier = Modifier.padding(8.dp) // Outer padding around the entire grid container
     ) {
-        // Iterating over items returned by getItems() function
+        // Iterate over the list of image resource IDs provided by getItems()
         items(getItems()) { drawable ->
-            // Displaying each item as an Image
+            // Display each image item with consistent padding
             Image(
                 painter = painterResource(id = drawable),
-                contentDescription = "",
-                modifier = Modifier.padding(4.dp) // Adding padding around each image
+                contentDescription = "Garfield Photo Item",
+                modifier = Modifier.padding(4.dp) // Spacing between individual grid cells
             )
         }
     }
 }
 
-// Function returning a list of drawable resource IDs
+/**
+ * Provides a curated list of drawable resource IDs representing photos in the gallery.
+ *
+ * @return A [List] of integer resource references for local image drawables.
+ */
 fun getItems(): List<Int> {
     return listOf(
-        // List of drawable resources (images)
         R.drawable.garfield1, R.drawable.garfield2, R.drawable.garfield3,
         R.drawable.garfield4, R.drawable.garfield5, R.drawable.garfield6,
         R.drawable.garfield10, R.drawable.garfield11, R.drawable.garfield16,
@@ -63,15 +74,19 @@ fun getItems(): List<Int> {
     )
 }
 
-// Annotation to use experimental API for Material3 components
+/**
+ * A reusable FilterChip component for category or tag filtering in the photo gallery UI.
+ *
+ * @param text The display label for the filter chip.
+ * @param selected State holder representing whether the chip is currently selected.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChipItem(text: String, selected: MutableState<String>) {
-    // Defining a FilterChip composable
     FilterChip(
-        modifier = Modifier.padding(end = 16.dp), // Adding padding to the end of the chip
-        selected = selected.value === text, // Chip is selected if its text matches the selected value
-        onClick = { selected.value = text }, // On click, set the chip's text as the selected value
-        label = { Text(text) } // Displaying the given text on the chip
+        modifier = Modifier.padding(end = 16.dp), // Right margin separating filter chips
+        selected = selected.value === text,       // Evaluates selection state based on matching text
+        onClick = { selected.value = text },      // Updates the selected state value when clicked
+        label = { Text(text) }                    // Label text content inside the chip
     )
 }
